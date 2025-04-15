@@ -7,19 +7,20 @@ const headers = { Authorization: "Api-Key " + API_KEY };
 
 const FacilitiesTable = () => {
     const [data, setData] = useState([]);
-    const [sortedData, setSortedData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [sortOrder, setSortOrder] = useState("asc"); // Default sort order
+    const [sortConfig, setSortConfig] = useState({ key: "id", order: "asc" });
     const [rowsPerPage, setRowsPerPage] = useState(10); // Default rows per page
     const [currentPage, setCurrentPage] = useState(1);
+    const [filters, setFilters] = useState({ city: "", country: "" });
 
     useEffect(() => {
         axios
             .get('https://www.peeringdb.com/api/fac', { headers })
             .then((response) => {
                 setData(response.data.data);
-                setSortedData(response.data.data); // Initialize sorted data
+                setFilteredData(response.data.data); // Initialize filtered data
                 setLoading(false);
             })
             .catch((err) => {
@@ -28,13 +29,17 @@ const FacilitiesTable = () => {
             });
     }, []);
 
-    const handleSort = () => {
-        const order = sortOrder === "asc" ? "desc" : "asc"; // Toggle sort order
-        const sorted = [...sortedData].sort((a, b) => {
-            return order === "asc" ? a.net_count - b.net_count : b.net_count - a.net_count;
+    const handleSort = (key) => {
+        const order = sortConfig.key === key && sortConfig.order === "asc" ? "desc" : "asc";
+        const sorted = [...filteredData].sort((a, b) => {
+            if (order === "asc") {
+                return a[key] > b[key] ? 1 : -1;
+            } else {
+                return a[key] < b[key] ? 1 : -1;
+            }
         });
-        setSortedData(sorted);
-        setSortOrder(order); // Update sort order
+        setFilteredData(sorted);
+        setSortConfig({ key, order });
     };
 
     const handleRowsPerPageChange = (e) => {
@@ -44,13 +49,33 @@ const FacilitiesTable = () => {
     };
 
     const restoreDefaultView = () => {
-        setRowsPerPage(10); // Reset to default rows per page
-        setCurrentPage(1); // Reset to first page
+        setRowsPerPage(10);
+        setCurrentPage(1);
+        setFilters({ city: "", country: "" }); // Clear filters
+        setFilteredData(data); // Reset to original data
+    };
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+
+        // Filter the data dynamically
+        const filtered = data.filter((item) => {
+            const matchesCity = filters.city
+                ? item.city.toLowerCase().includes(filters.city.toLowerCase())
+                : true;
+            const matchesCountry = filters.country
+                ? item.country.toLowerCase().includes(filters.country.toLowerCase())
+                : true;
+            return matchesCity && matchesCountry;
+        });
+        setFilteredData(filtered);
+        setCurrentPage(1); // Reset to first page after filtering
     };
 
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = rowsPerPage === data.length ? data.length : startIndex + rowsPerPage;
-    const displayedData = sortedData.slice(startIndex, endIndex);
+    const displayedData = filteredData.slice(startIndex, endIndex);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
@@ -59,6 +84,32 @@ const FacilitiesTable = () => {
         <div>
             <h1>Facilities Data</h1>
 
+            {/* Filters */}
+            <div style={{ marginBottom: "20px" }}>
+                <label>
+                    City:
+                    <input
+                        type="text"
+                        name="city"
+                        value={filters.city}
+                        onChange={handleFilterChange}
+                        placeholder="Filter by city"
+                        style={{ marginLeft: "10px", marginRight: "20px", padding: "5px" }}
+                    />
+                </label>
+                <label>
+                    Country:
+                    <input
+                        type="text"
+                        name="country"
+                        value={filters.country}
+                        onChange={handleFilterChange}
+                        placeholder="Filter by country"
+                        style={{ marginLeft: "10px", padding: "5px" }}
+                    />
+                </label>
+            </div>
+
             {/* Row Limit Selector */}
             <div style={{ marginBottom: "20px" }}>
                 <label>
@@ -66,7 +117,7 @@ const FacilitiesTable = () => {
                     <select
                         value={rowsPerPage === data.length ? "All" : rowsPerPage}
                         onChange={handleRowsPerPageChange}
-                        style={{ marginLeft: "10px", padding: "4px 8px", fontSize: "14px" }}
+                        style={{ marginLeft: "10px", padding: "5px" }}
                     >
                         <option value={5}>5</option>
                         <option value={10}>10</option>
@@ -80,8 +131,7 @@ const FacilitiesTable = () => {
                     onClick={restoreDefaultView}
                     style={{
                         marginLeft: "20px",
-                        padding: "4px 8px",
-                        fontSize: "14px",
+                        padding: "5px 10px",
                         backgroundColor: "#007bff",
                         color: "white",
                         border: "none",
@@ -93,25 +143,49 @@ const FacilitiesTable = () => {
                 </button>
             </div>
 
+            {/* Table */}
             <table>
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>
+                            ID
+                            <button
+                                onClick={() => handleSort("id")}
+                                style={{
+                                    marginLeft: "10px",
+                                    padding: "5px",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                Sort ({sortConfig.key === "id" ? (sortConfig.order === "asc" ? "↑" : "↓") : "↕"})
+                            </button>
+                        </th>
                         <th>Org Name</th>
-                        <th>City</th>
+                        <th>
+                            City
+                            <button
+                                onClick={() => handleSort("city")}
+                                style={{
+                                    marginLeft: "10px",
+                                    padding: "5px",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                Sort ({sortConfig.key === "city" ? (sortConfig.order === "asc" ? "↑" : "↓") : "↕"})
+                            </button>
+                        </th>
                         <th>Country</th>
                         <th>
                             Net Count
                             <button
-                                onClick={handleSort}
+                                onClick={() => handleSort("net_count")}
                                 style={{
                                     marginLeft: "10px",
-                                    padding: "4px 8px",
-                                    fontSize: "14px",
+                                    padding: "5px",
                                     cursor: "pointer",
                                 }}
                             >
-                                Sort ({sortOrder === "asc" ? "↑" : "↓"})
+                                Sort ({sortConfig.key === "net_count" ? (sortConfig.order === "asc" ? "↑" : "↓") : "↕"})
                             </button>
                         </th>
                         <th>Latitude</th>

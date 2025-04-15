@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-ro
 import ExchangeTable from './exchanges';
 import NetworkTable from './network';
 import FacilityTable from './facility';
+import FacilityLeadGenerator from './leadGenerator';
 
 const ProtectedComponent = () => {
     const [isPasswordVerified, setIsPasswordVerified] = useState(false);
@@ -69,7 +70,8 @@ const ProtectedComponent = () => {
                 <nav style={{ marginBottom: '20px', fontSize: '18px' }}>
                     <Link to="/exchanges" style={{ marginRight: '20px' }}>Exchanges</Link>
                     <Link to="/networks" style={{ marginRight: '20px' }}>Networks</Link>
-                    <Link to="/facilities">Facilities</Link>
+                    <Link to="/facilities" style={{ marginRight: '20px' }}>Facilities</Link>
+                    <Link to="/leadgenerator" style={{ marginRight: '20px' }}>Lead Generator</Link>
                     <button
                         onClick={handleLogout}
                         style={{
@@ -92,6 +94,7 @@ const ProtectedComponent = () => {
                     <Route path="/exchanges" element={<ExchangeTable />} />
                     <Route path="/networks" element={<NetworkTable />} />
                     <Route path="/facilities" element={<FacilityTable />} />
+                    <Route path="/leadgenerator" element={<FacilityLeadGenerator/>} />
                 </Routes>
             </div>
         </Router>
