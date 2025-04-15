@@ -1,70 +1,111 @@
-# Getting Started with Create React App
+# Protected React Dashboard with Tables
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a React-based dashboard that displays data for exchanges, networks, and facilities in interactive tables. It features password protection, sorting, filtering, and adjustable row limits. The project is deployed on Netlify for easy access.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+### Password Protection
+- A password-protected entry ensures only authorized users can access the dashboard.
+- Once logged in, the session persists via `localStorage` so users don’t need to re-enter the password after refreshing the page.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Interactive Tables
+- **Exchanges**: Displays exchange data with sorting and filtering options for facility count and ID.
+- **Networks**: Displays network data with sorting options for ASN and ID.
+- **Facilities**: Displays facility data with sorting options for network count and ID.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Adjustable Row Limits
+- Users can adjust the number of rows displayed per table (5, 10, 25, 50, or All).
+- Includes a "Restore Default" button to reset the row limit to the default value.
 
-### `npm test`
+### Fully Responsive
+- Designed to work seamlessly on both desktop and mobile devices.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Tech Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Frontend**: React.js
+- **Styling**: CSS
+- **Deployment**: Netlify
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Installation and Setup
 
-### `npm run eject`
+### Prerequisites
+- Node.js installed (LTS version recommended)
+- Git installed
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Steps to Run Locally
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/your-repository.git
+   cd your-repository
+Install dependencies:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+bash
+Copy code
+npm install
+Start the development server:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+bash
+Copy code
+npm start
+Open your browser and navigate to:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+arduino
+Copy code
+http://localhost:3000
+Deployment
+This project is deployed on Netlify. You can access it at: Your Netlify URL
 
-## Learn More
+Steps for Deployment
+Build the project:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+bash
+Copy code
+npm run build
+Deploy the build folder to Netlify:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Drag and drop the folder to Netlify’s deployment area, or connect your GitHub repository for automatic deployment.
+Usage
+Login:
 
-### Code Splitting
+Enter the password to access the dashboard. The default password is jordanisking.
+Password is stored in localStorage to persist the session.
+Navigation:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Use the navigation bar to access:
+Exchanges: /exchanges
+Networks: /networks
+Facilities: /facilities
+Tables:
 
-### Analyzing the Bundle Size
+Sort columns by clicking the "Sort" button in the table headers.
+Adjust row limits using the dropdown menu.
+Logout:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Click the "Logout" button in the navigation bar to clear the session.
+Project Structure
+scss
+Copy code
+src/
+├── components/
+│   ├── ExchangeTable.js
+│   ├── NetworkTable.js
+│   ├── FacilityTable.js
+│   ├── ProtectedComponent.js
+├── App.js
+├── index.js
+├── styles/
+│   ├── ExchangeTable.css
+│   ├── NetworkTable.css
+│   ├── FacilityTable.css
+├── utils/
+│   └── dataFetching.js (optional utility for API calls)
+Future Enhancements
+Role-Based Authentication: Different levels of access for users.
+Pagination: Add advanced pagination for large datasets.
+API Integration: Extend functionality to support live updates from APIs.
